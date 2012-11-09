@@ -27,16 +27,13 @@ class imgur:
 
 	def downloadImage(self, url, sub):
 		ending = url.split("/")[3]
-		base = "http://www.imgur.com/r/"
-		jsonUrl = base + sub + "/" + ending + ".json"
+		base = "http://api.imgur.com/2/image/"
+		jsonUrl = base + ending + ".json"
 		try:
 			u = urllib.urlopen(jsonUrl)
 			j = json.load(u)
-			data = j[u'data'][u'image']
-			h = str(data[u'hash'])
-			ext = str(data[u'ext'])
-			download = "http://i.imgur.com/" + h + ext
-			self.directlyDownload(download, sub)
+			link = j[u'image'][u'links'][u'original']
+			self.directlyDownload(link, sub)
 		except ValueError:
 			print url
 			print jsonUrl
