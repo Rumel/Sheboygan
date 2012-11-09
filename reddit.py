@@ -10,7 +10,7 @@ albums = 0
 
 def getOpener():
 	opener = urllib2.build_opener()
-	opener.addheaders = [('User-Agent', 'MyPythonTestProgram')]
+	opener.addheaders = [('User-Agent', 'Sheboygan Reddit Downloader')]
 	return opener
 
 def buildUrl(sub):
