@@ -31,7 +31,11 @@ def getArticles(url, pages = 1):
 		d = j[u'data'][u'children']
 		for a in d:
 			articles.append(a[u'data'])
-		lastThing = d[24][u'data'][u'name']
+		try:
+			lastThing = d[24][u'data'][u'name']
+		except IndexError:
+			print "Out of Range"
+			break;
 	return articles
 
 def getImageUrls(articles):
