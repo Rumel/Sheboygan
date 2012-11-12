@@ -47,6 +47,13 @@ class imgur:
 		jsonUrl = base + ending + ".json"
 		u = urllib.urlopen(jsonUrl)
 		j = json.load(u)
+
+		#Check to see if the album exists
+		for d in j:
+			if(d == u'error'):
+				print "There was an error finding the album"
+				return 0
+
 		images = j[u'album'][u'images']
 		count = 1
 		for i in images:
