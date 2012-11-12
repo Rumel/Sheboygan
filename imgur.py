@@ -33,7 +33,10 @@ class imgur:
 				save = gif + last
 
 		if(not os.path.exists(save)):
-			urllib.urlretrieve(url, save)
+			try:
+				urllib.urlretrieve(url, save)
+			except IOError:
+				print "Imgur didn't respond"
 			print "Downloaded " + save
 		else:
 			print "Skipping already downloaded"
