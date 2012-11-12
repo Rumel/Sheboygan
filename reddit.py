@@ -69,7 +69,7 @@ def downloadImage(url, sub):
 		i.directlyDownload(url, sub)
 		imgs = imgs + 1
 	elif(url.split("/")[2] == "imgur.com" and url.split("/")[3] == "a"):
-		i.downloadAlbum(url, sub)
+		imgs = imgs + i.downloadAlbum(url, sub)
 		albums = albums + 1
 	elif(url.split("/")[2] == "imgur.com"):
 		i.downloadImage(url, sub)
@@ -87,4 +87,4 @@ for i in images:
 	downloadImage(i, sub)
 
 print "Downloaded " + str(imgs) + " images"
-print "Skipped " + str(albums) + " albums"
+print "Downloaded " + str(albums) + " albums"
