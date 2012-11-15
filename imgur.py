@@ -11,8 +11,12 @@ def formatNumber(num):
 		return num
 
 def getJson(jsonUrl):
-	u = urllib.urlopen(jsonUrl)
-	return json.load(u)
+	try:
+		u = urllib.urlopen(jsonUrl)
+		return json.load(u)
+	except:
+		print "Error occured on getting json"
+		return 0
 
 class imgur:
 	def __init_(self):
@@ -50,6 +54,8 @@ class imgur:
 		ending = url.split("/")[4]
 		jsonUrl = base + ending + ".json"
 		j = getJson(jsonUrl)
+		if(j == 0):
+			return 0
 
 		#Check to see if the album exists
 		for d in j:
@@ -71,6 +77,8 @@ class imgur:
 		jsonUrl = base + ending + ".json"
 		try:
 			j = getJson(jsonUrl)
+			if(j == 0):
+				return
 			link = j[u'image'][u'links'][u'original']
 			self.directlyDownload(link, sub)
 		except ValueError:
