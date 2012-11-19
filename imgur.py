@@ -8,7 +8,7 @@ def formatNumber(num):
 	elif(num < 100):
 		return "0" + str(num)
 	else:
-		return num
+		return str(num)
 
 def getJson(jsonUrl):
 	try:
