@@ -18,7 +18,7 @@ def getJson(jsonUrl):
 		print "Error occured on getting json"
 		return 0
 
-class imgur:
+class Imgur:
 	def __init_(self):
 
 		return

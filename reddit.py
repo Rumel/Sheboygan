@@ -70,7 +70,7 @@ class Reddit:
 
 	def downloadImage(self, iurl):
 		makeDir(self.SUB)
-		i = imgur.imgur()
+		i = imgur.Imgur()
 		split = iurl.split(".")
 		ext = split[len(split) - 1]
 		if(ext == "jpg" or ext == "gif" or ext == "png"):
