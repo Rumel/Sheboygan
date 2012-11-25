@@ -33,7 +33,6 @@ class Reddit:
 	BASE = "http://www.reddit.com/r/"
 	URL = ""
 	LINKS = []
-	IMAGEURLS = []
 	SUB = ""
 	IMGS = 0
 	ALBUMS = 0
@@ -63,11 +62,6 @@ class Reddit:
 				print "Out of Range"
 				break;
 
-	def getImageUrls(self):
-		for l in self.LINKS:
-			self.IMAGEURLS.append(l.URL)
-		return
-
 	def downloadImage(self, iurl):
 		makeDir(self.SUB)
 		i = imgur.Imgur()
@@ -85,8 +79,8 @@ class Reddit:
 		return
 
 	def downloadImages(self):
-		for i in self.IMAGEURLS:
-			self.downloadImage(i)
+		for i in self.LINKS:
+			self.downloadImage(i.URL)
 		return
 
 class Link:
