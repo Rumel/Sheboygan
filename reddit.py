@@ -45,22 +45,20 @@ class Reddit:
 
 	def getLinks(self, pages = 1):
 		opener = getOpener()
-		lastThing = ""
+		after = ""
 		for i in range(0, int(pages)):
 			print "Getting page " + str(i + 1)
 			if(i != 0):
-				u = opener.open(self.URL + "?after=" + lastThing)
+				u = opener.open(self.URL + "?after=" + after)
 			else:
 				u = opener.open(self.URL)
-			j = json.load(u)
-			d = j[u'data'][u'children']
-			for a in d:
-				self.LINKS.append(Link(a))
-			try:
-				lastThing = d[24][u'data'][u'name']
-			except IndexError:
-				print "Out of Range"
-				break;
+			page = json.load(u)
+			children = page[u'data'][u'children']
+			for l in children:
+				self.LINKS.append(Link(l))
+			after = page[u'data'][u'after']
+			if(after is None):
+				break
 
 	def downloadImage(self, iurl):
 		makeDir(self.SUB)
