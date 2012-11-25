@@ -2,6 +2,7 @@ import os
 import json
 import urllib2
 import imgur
+import time
 
 def getOpener():
 	opener = urllib2.build_opener()
@@ -44,6 +45,8 @@ class Reddit:
 		return
 
 	def getLinks(self, pages = 1):
+		print "This will take approximately " + str(int(pages) * 2) + " seconds."
+		print "This is due to Reddit's two second API rule"
 		opener = getOpener()
 		after = ""
 		for i in range(0, int(pages)):
@@ -59,6 +62,8 @@ class Reddit:
 			after = page[u'data'][u'after']
 			if(after is None):
 				break
+		time.sleep(2)
+
 
 	def downloadImage(self, iurl):
 		makeDir(self.SUB)
