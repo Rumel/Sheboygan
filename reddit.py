@@ -44,19 +44,23 @@ def getImageUrls(articles):
 		urls.append(a[u'url'])
 	return urls
 
+def createIfNotExists(dir):
+	if(not os.path.exists(dir)):
+		os.mkdir(dir)
+		print "Created " + dir
+	return
+
 def makeDir(dir):
-	if(not os.path.exists(".\\downloads\\")):
-		os.mkdir(".\\downloads\\")
-		print "Created " + ".\\downloads\\"
-	if(not os.path.exists(".\\downloads\\" + dir)):		
-		os.mkdir(".\\downloads\\" + dir)
-		print "Created " + ".\\downloads\\" + dir
-	if(not os.path.exists(".\\downloads\\" + dir +"\\img")):
-		os.mkdir(".\\downloads\\" + dir + "\\img")
-		print "Created " + ".\\downloads\\" + dir + "\\img"
-	if(not os.path.exists(".\\downloads\\" + dir + "\\gif")):
-		os.mkdir(".\\downloads\\" + dir + "\\gif")
-		print "Created " + ".\\downloads\\" + dir + "\\gif"
+	dls = ".\\downloads\\"
+	img = "\\img"
+	gif = "\\gif"
+	dlDir = dls + dir
+	dlDirImg = dlDir + img
+	dlDirGif = dlDir + gif
+	createIfNotExists(dls)
+	createIfNotExists(dlDir)
+	createIfNotExists(dlDirImg)
+	createIfNotExists(dlDirGif)
 
 def downloadImage(url, sub):
 	makeDir(sub)
