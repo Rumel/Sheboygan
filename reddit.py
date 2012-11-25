@@ -32,19 +32,19 @@ def makeDir(dir):
 class Reddit:
 	BASE = "http://www.reddit.com/r/"
 	URL = ""
+	LINKS = []
 	IMAGEURLS = []
 	SUB = ""
-	ARTICLES = []
 	IMGS = 0
 	ALBUMS = 0
 
 	def __init__(self, sub, pages = 1):
 		self.SUB = sub
 		self.URL = buildUrl(self.BASE, self.SUB)
-		self.getArticles(pages)
+		self.getLinks(pages)
 		return
 
-	def getArticles(self, pages = 1):
+	def getLinks(self, pages = 1):
 		opener = getOpener()
 		lastThing = ""
 		for i in range(0, int(pages)):
@@ -56,7 +56,7 @@ class Reddit:
 			j = json.load(u)
 			d = j[u'data'][u'children']
 			for a in d:
-				self.ARTICLES.append(a[u'data'])
+				self.LINKS.append(Link(a))
 			try:
 				lastThing = d[24][u'data'][u'name']
 			except IndexError:
@@ -64,8 +64,8 @@ class Reddit:
 				break;
 
 	def getImageUrls(self):
-		for a in self.ARTICLES:
-			self.IMAGEURLS.append(a[u'url'])
+		for l in self.LINKS:
+			self.IMAGEURLS.append(l.URL)
 		return
 
 	def downloadImage(self, iurl):
@@ -87,4 +87,40 @@ class Reddit:
 	def downloadImages(self):
 		for i in self.IMAGEURLS:
 			self.downloadImage(i)
+		return
+
+class Link:
+	def __init__(self, link):
+		self.Kind = link[u'kind']
+		data = link[u'data']
+		self.Domain = data[u'domain']
+		self.Banned_by = data[u'banned_by']
+		self.Media_embed = data[u'media_embed']
+		self.Subreddit = data[u'subreddit']
+		self.Selftext_html = data[u'selftext_html']
+		self.Likes = data[u'likes']
+		self.Id = data[u'id']
+		self.Clicked = data[u'clicked']
+		self.Title = data[u'title']
+		self.Num_Comments = data[u'num_comments']
+		self.Score = data[u'score']
+		self.Approved_By = data[u'approved_by']
+		self.NSFW = data[u'over_18']
+		self.Hidden = data[u'hidden']
+		self.Thumbnail = data[u'thumbnail']
+		self.Subreddit_id = data[u'subreddit_id']
+		self.Edited = data[u'edited']
+		self.Link_flair_css_class = data[u'link_flair_css_class']
+		self.Downs = data[u'downs']
+		self.Saved = data[u'saved']
+		self.Is_self = data[u'is_self']
+		self.Permalink = data[u'permalink']
+		self.Name = data[u'name']
+		self.Created = data[u'created']
+		self.URL = data[u'url']
+		self.Author_flair_text = data[u'author_flair_text']
+		self.Author = data[u'author']
+		self.Media = data[u'media']
+		self.Num_reports = data[u'num_reports']
+		self.Ups = data[u'ups']
 		return
