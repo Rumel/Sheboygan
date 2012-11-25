@@ -3,46 +3,13 @@ import json
 import urllib2
 import imgur
 
-base = "http://www.reddit.com/r/"
-
-imgs = 0
-albums = 0
-
 def getOpener():
 	opener = urllib2.build_opener()
 	opener.addheaders = [('User-Agent', 'Sheboygan Reddit Downloader')]
 	return opener
 
-def buildUrl(sub):
-	global base
+def buildUrl(base, sub):
 	return base + sub + ".json"
-
-def getArticles(url, pages = 1):
-	articles = []
-	opener = getOpener()
-	lastThing = ""
-	for i in range(0, pages):
-		print "Getting page " + str(i + 1)
-		if(i != 0):
-			u = opener.open(url + "?after=" + lastThing)
-		else:
-			u = opener.open(url)
-		j = json.load(u)
-		d = j[u'data'][u'children']
-		for a in d:
-			articles.append(a[u'data'])
-		try:
-			lastThing = d[24][u'data'][u'name']
-		except IndexError:
-			print "Out of Range"
-			break;
-	return articles
-
-def getImageUrls(articles):
-	urls = []
-	for a in articles:
-		urls.append(a[u'url'])
-	return urls
 
 def createIfNotExists(dir):
 	if(not os.path.exists(dir)):
@@ -62,33 +29,62 @@ def makeDir(dir):
 	createIfNotExists(dlDirImg)
 	createIfNotExists(dlDirGif)
 
-def downloadImage(url, sub):
-	makeDir(sub)
-	global albums
-	global imgs
-	i = imgur.imgur()
-	split = url.split(".")
-	ext = split[len(split) - 1]
-	if(ext == "jpg" or ext == "gif" or ext == "png"):
-		i.directlyDownload(url, sub)
-		imgs = imgs + 1
-	elif(url.split("/")[2] == "imgur.com" and url.split("/")[3] == "a"):
-		imgs = imgs + i.downloadAlbum(url, sub)
-		albums = albums + 1
-	elif(url.split("/")[2] == "imgur.com"):
-		i.downloadImage(url, sub)
-		imgs = imgs + 1
-	return
+class Reddit:
+	BASE = "http://www.reddit.com/r/"
+	URL = ""
+	IMAGEURLS = []
+	SUB = ""
+	ARTICLES = []
+	IMGS = 0
+	ALBUMS = 0
 
-sub = raw_input("What subreddit would you like?\n")
-pages = raw_input("How many pages?\n")
+	def __init__(self, sub, pages = 1):
+		self.SUB = sub
+		self.URL = buildUrl(self.BASE, self.SUB)
+		self.getArticles(pages)
+		return
 
-url = buildUrl(sub)
+	def getArticles(self, pages = 1):
+		opener = getOpener()
+		lastThing = ""
+		for i in range(0, int(pages)):
+			print "Getting page " + str(i + 1)
+			if(i != 0):
+				u = opener.open(self.URL + "?after=" + lastThing)
+			else:
+				u = opener.open(self.URL)
+			j = json.load(u)
+			d = j[u'data'][u'children']
+			for a in d:
+				self.ARTICLES.append(a[u'data'])
+			try:
+				lastThing = d[24][u'data'][u'name']
+			except IndexError:
+				print "Out of Range"
+				break;
 
-images = getImageUrls(getArticles(url, int(pages)))
+	def getImageUrls(self):
+		for a in self.ARTICLES:
+			self.IMAGEURLS.append(a[u'url'])
+		return
 
-for i in images:
-	downloadImage(i, sub)
+	def downloadImage(self, iurl):
+		makeDir(self.SUB)
+		i = imgur.imgur()
+		split = iurl.split(".")
+		ext = split[len(split) - 1]
+		if(ext == "jpg" or ext == "gif" or ext == "png"):
+			i.directlyDownload(iurl, self.SUB)
+			self.IMGS = self.IMGS + 1
+		elif(iurl.split("/")[2] == "imgur.com" and iurl.split("/")[3] == "a"):
+			self.IMGS = self.IMGS + i.downloadAlbum(iurl , self.SUB)
+			self.ALBUMS = self.ALBUMS + 1
+		elif(iurl.split("/")[2] == "imgur.com"):
+			i.downloadImage(iurl, self.SUB)
+			self.IMGS = self.IMGS + 1
+		return
 
-print "Downloaded " + str(imgs) + " images"
-print "Downloaded " + str(albums) + " albums"
+	def downloadImages(self):
+		for i in self.IMAGEURLS:
+			self.downloadImage(i)
+		return
