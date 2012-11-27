@@ -90,7 +90,6 @@ class Reddit:
 	def downloadImagesAsync(self):
 		makeDir(self.SUB)
 		for i in self.LINKS:
-			#self.downloadImage(i.URL)
 			thread = threading.Thread(target=self.downloadImage, args=([i.URL]))
 			thread.start()
 		return
