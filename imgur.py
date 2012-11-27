@@ -2,6 +2,7 @@ import os
 import json
 import urllib
 import sys
+import threading
 
 def formatNumber(num):
 	if(num < 10):
@@ -69,6 +70,31 @@ class Imgur:
 		for i in images:
 			download = i[u'links'][u'original']
 			self.directlyDownload(download, sub, album = ending, count = count)
+			count = count + 1
+		return count
+
+	def downloadAlbumAsync(self, url, sub):
+		base = "http://api.imgur.com/2/album/"
+		ending = url.split("/")[4]
+		jsonUrl = base + ending + ".json"
+		j = getJson(jsonUrl)
+		if(j == 0):
+			return 0
+
+		#Check to see if the album exists
+		for d in j:
+			if(d == u'error'):
+				sys.stdout.wrte('There was an error finding the album\n')
+				return 0
+
+		images = j[u'album'][u'images']
+		count = 1
+		for i in images:
+			download = i[u'links'][u'original']
+			#self.directlyDownload(download, sub, album = ending, count = count)
+			#count = count + 1
+			thread = threading.Thread(target=self.directlyDownload, args=([download, sub, ending, count]))
+			thread.start()
 			count = count + 1
 		return count
 

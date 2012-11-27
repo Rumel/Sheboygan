@@ -81,6 +81,21 @@ class Reddit:
 			self.IMGS = self.IMGS + 1
 		return
 
+	def downloadImageAsync(self, iurl):
+		i = imgur.Imgur()
+		split = iurl.split(".")
+		ext = split[len(split) - 1]
+		if(ext == "jpg" or ext == "gif" or ext == "png"):
+			i.directlyDownload(iurl, self.SUB)
+			self.IMGS = self.IMGS + 1
+		elif(iurl.split("/")[2] == "imgur.com" and iurl.split("/")[3] == "a"):
+			self.IMGS = self.IMGS + i.downloadAlbumAsync(iurl , self.SUB)
+			self.ALBUMS = self.ALBUMS + 1
+		elif(iurl.split("/")[2] == "imgur.com"):
+			i.downloadImage(iurl, self.SUB)
+			self.IMGS = self.IMGS + 1
+		return
+
 	def downloadImages(self):
 		makeDir(self.SUB)
 		for i in self.LINKS:
@@ -90,7 +105,7 @@ class Reddit:
 	def downloadImagesAsync(self):
 		makeDir(self.SUB)
 		for i in self.LINKS:
-			thread = threading.Thread(target=self.downloadImage, args=([i.URL]))
+			thread = threading.Thread(target=self.downloadImageAsync, args=([i.URL]))
 			thread.start()
 		return
 
