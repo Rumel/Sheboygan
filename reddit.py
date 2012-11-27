@@ -67,7 +67,6 @@ class Reddit:
 
 
 	def downloadImage(self, iurl):
-		makeDir(self.SUB)
 		i = imgur.Imgur()
 		split = iurl.split(".")
 		ext = split[len(split) - 1]
@@ -83,11 +82,13 @@ class Reddit:
 		return
 
 	def downloadImages(self):
+		makeDir(self.SUB)
 		for i in self.LINKS:
 			self.downloadImage(i.URL)
 		return
 
 	def downloadImagesAsync(self):
+		makeDir(self.SUB)
 		for i in self.LINKS:
 			#self.downloadImage(i.URL)
 			thread = threading.Thread(target=self.downloadImage, args=([i.URL]))
