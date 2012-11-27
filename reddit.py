@@ -4,6 +4,7 @@ import urllib2
 import imgur
 import time
 import threading
+import sys
 
 def getOpener():
 	opener = urllib2.build_opener()
@@ -89,7 +90,8 @@ class Reddit:
 			i.directlyDownload(iurl, self.SUB)
 			self.IMGS = self.IMGS + 1
 		elif(iurl.split("/")[2] == "imgur.com" and iurl.split("/")[3] == "a"):
-			self.IMGS = self.IMGS + i.downloadAlbumAsync(iurl , self.SUB)
+			c = i.downloadAlbumAsync(iurl , self.SUB)
+			self.IMGS = self.IMGS + c
 			self.ALBUMS = self.ALBUMS + 1
 		elif(iurl.split("/")[2] == "imgur.com"):
 			i.downloadImage(iurl, self.SUB)
@@ -104,9 +106,14 @@ class Reddit:
 
 	def downloadImagesAsync(self):
 		makeDir(self.SUB)
+		threads = []
 		for i in self.LINKS:
 			thread = threading.Thread(target=self.downloadImageAsync, args=([i.URL]))
-			thread.start()
+			threads.append(thread)
+		for t in threads:
+			t.start()
+		for t in threads:
+			t.join()
 		return
 
 class Link:

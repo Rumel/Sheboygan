@@ -66,7 +66,7 @@ class Imgur:
 				return 0
 
 		images = j[u'album'][u'images']
-		count = 1
+		count = 0
 		for i in images:
 			download = i[u'links'][u'original']
 			self.directlyDownload(download, sub, album = ending, count = count)
@@ -88,14 +88,17 @@ class Imgur:
 				return 0
 
 		images = j[u'album'][u'images']
-		count = 1
+		count = 0
+		threads = []
 		for i in images:
-			download = i[u'links'][u'original']
-			#self.directlyDownload(download, sub, album = ending, count = count)
-			#count = count + 1
-			thread = threading.Thread(target=self.directlyDownload, args=([download, sub, ending, count]))
-			thread.start()
 			count = count + 1
+			download = i[u'links'][u'original']
+			thread = threading.Thread(target=self.directlyDownload, args=([download, sub, ending, count]))
+			threads.append(thread)
+		for t in threads:
+			t.start()
+		for t in threads:
+			t.join()
 		return count
 
 	def downloadImage(self, url, sub):
