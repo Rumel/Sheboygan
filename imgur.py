@@ -1,6 +1,7 @@
 import os
 import json
 import urllib
+import sys
 
 def formatNumber(num):
 	if(num < 10):
@@ -15,7 +16,7 @@ def getJson(jsonUrl):
 		u = urllib.urlopen(jsonUrl)
 		return json.load(u)
 	except:
-		print "Error occured on getting json"
+		sys.stdout.write("Error occured on getting json\n")
 		return 0
 
 class Imgur:
@@ -44,10 +45,10 @@ class Imgur:
 			try:
 				urllib.urlretrieve(url, save)
 			except IOError:
-				print "Imgur didn't respond"
-			print "Downloaded " + save
+				sys.stdout.write("Imgur didn't respond\n")
+			sys.stdout.write('Downloaded ' + save + '\n')
 		else:
-			print "Skipping already downloaded"
+			sys.stdout.write('Skipping already downloaded\n')
 
 	def downloadAlbum(self, url, sub):
 		base = "http://api.imgur.com/2/album/"
@@ -60,7 +61,7 @@ class Imgur:
 		#Check to see if the album exists
 		for d in j:
 			if(d == u'error'):
-				print "There was an error finding the album"
+				sys.stdout.wrte('There was an error finding the album\n')
 				return 0
 
 		images = j[u'album'][u'images']
@@ -82,9 +83,7 @@ class Imgur:
 			link = j[u'image'][u'links'][u'original']
 			self.directlyDownload(link, sub)
 		except ValueError:
-			print url
-			print jsonUrl
-			print "No JSON object could be decoded"
+			sys.stdout.write(url + '\n' + jsonUrl + '\nNo JSON object could be decoded\n')
 		except:
-			print "Unknown Error"
+			sys.stdout.write('Unkown Error\n')
 		return
