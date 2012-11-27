@@ -3,6 +3,7 @@ import json
 import urllib2
 import imgur
 import time
+import threading
 
 def getOpener():
 	opener = urllib2.build_opener()
@@ -84,6 +85,13 @@ class Reddit:
 	def downloadImages(self):
 		for i in self.LINKS:
 			self.downloadImage(i.URL)
+		return
+
+	def downloadImagesAsync(self):
+		for i in self.LINKS:
+			#self.downloadImage(i.URL)
+			thread = threading.Thread(target=self.downloadImage, args=([i.URL]))
+			thread.start()
 		return
 
 class Link:
