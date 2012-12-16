@@ -6,19 +6,23 @@ import time
 import threading
 import sys
 
+
 def getOpener():
     opener = urllib2.build_opener()
     opener.addheaders = [('User-Agent', 'Sheboygan Reddit Downloader')]
     return opener
 
+
 def buildUrl(base, sub):
     return base + sub + ".json"
+
 
 def createIfNotExists(dir):
     if(not os.path.exists(dir)):
         os.mkdir(dir)
         print "Created " + dir
     return
+
 
 def makeDir(dir):
     dls = ".\\downloads\\"
@@ -32,6 +36,7 @@ def makeDir(dir):
     createIfNotExists(dlDirImg)
     createIfNotExists(dlDirGif)
 
+
 class Reddit:
     BASE = "http://www.reddit.com/r/"
     URL = ""
@@ -40,13 +45,13 @@ class Reddit:
     IMGS = 0
     ALBUMS = 0
 
-    def __init__(self, sub, pages = 1):
+    def __init__(self, sub, pages=1):
         self.SUB = sub
         self.URL = buildUrl(self.BASE, self.SUB)
         self.getLinks(pages)
         return
 
-    def getLinks(self, pages = 1):
+    def getLinks(self, pages=1):
         print "This will take approximately " + str(int(pages) * 2) + " seconds."
         print "This is due to Reddit's two second API rule"
         opener = getOpener()
@@ -66,7 +71,6 @@ class Reddit:
                 break
         time.sleep(2)
 
-
     def downloadImage(self, iurl):
         i = imgur.Imgur()
         split = iurl.split(".")
@@ -75,7 +79,7 @@ class Reddit:
             i.directlyDownload(iurl, self.SUB)
             self.IMGS = self.IMGS + 1
         elif(iurl.split("/")[2] == "imgur.com" and iurl.split("/")[3] == "a"):
-            self.IMGS = self.IMGS + i.downloadAlbum(iurl , self.SUB)
+            self.IMGS = self.IMGS + i.downloadAlbum(iurl, self.SUB)
             self.ALBUMS = self.ALBUMS + 1
         elif(iurl.split("/")[2] == "imgur.com"):
             i.downloadImage(iurl, self.SUB)
@@ -90,7 +94,7 @@ class Reddit:
             i.directlyDownload(iurl, self.SUB)
             self.IMGS = self.IMGS + 1
         elif(iurl.split("/")[2] == "imgur.com" and iurl.split("/")[3] == "a"):
-            c = i.downloadAlbumAsync(iurl , self.SUB)
+            c = i.downloadAlbumAsync(iurl, self.SUB)
             self.IMGS = self.IMGS + c
             self.ALBUMS = self.ALBUMS + 1
         elif(iurl.split("/")[2] == "imgur.com"):
@@ -115,6 +119,7 @@ class Reddit:
         for t in threads:
             t.join()
         return
+
 
 class Link:
     def __init__(self, link):
