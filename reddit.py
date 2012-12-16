@@ -52,7 +52,8 @@ class Reddit:
         return
 
     def getLinks(self, pages=1):
-        print "This will take approximately " + str(int(pages) * 2) + " seconds."
+        print "This will take approximately " + str(int(pages) * 2) \
+            + " seconds."
         print "This is due to Reddit's two second API rule"
         opener = getOpener()
         after = ""
@@ -112,7 +113,8 @@ class Reddit:
         makeDir(self.SUB)
         threads = []
         for i in self.LINKS:
-            thread = threading.Thread(target=self.downloadImageAsync, args=([i.URL]))
+            thread = threading.Thread(target=self.downloadImageAsync,
+                                      args=([i.URL]))
             threads.append(thread)
         for t in threads:
             t.start()

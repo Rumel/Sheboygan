@@ -96,7 +96,8 @@ class Imgur:
         for i in images:
             count = count + 1
             download = i[u'links'][u'original']
-            thread = threading.Thread(target=self.directlyDownload, args=([download, sub, ending, count]))
+            thread = threading.Thread(target=self.directlyDownload,
+                                      args=([download, sub, ending, count]))
             threads.append(thread)
         for t in threads:
             t.start()
@@ -115,7 +116,8 @@ class Imgur:
             link = j[u'image'][u'links'][u'original']
             self.directlyDownload(link, sub)
         except ValueError:
-            sys.stdout.write(url + '\n' + jsonUrl + '\nNo JSON object could be decoded\n')
+            sys.stdout.write(url + '\n' + jsonUrl +
+                             '\nNo JSON object could be decoded\n')
         except:
             sys.stdout.write('Unkown Error\n')
         return
