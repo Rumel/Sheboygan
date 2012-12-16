@@ -13,6 +13,7 @@ def formatNumber(num):
     else:
         return str(num)
 
+
 def getJson(jsonUrl):
     try:
         u = urllib.urlopen(jsonUrl)
@@ -21,12 +22,13 @@ def getJson(jsonUrl):
         sys.stdout.write("Error occured on getting json\n")
         return 0
 
+
 class Imgur:
     def __init_(self):
 
         return
 
-    def directlyDownload(self, url, sub, album = "", count = 0):
+    def directlyDownload(self, url, sub, album="", count=0):
         split = url.split("/")
         last = split[len(split) - 1]
         ext = last.split(".")[1]
@@ -39,7 +41,7 @@ class Imgur:
         else:
             gif = ".\\downloads\\" + sub + "\\gif\\"
             if(album != ""):
-                save = gif + album + " - "  + formatNumber(count) + ".gif"
+                save = gif + album + " - " + formatNumber(count) + ".gif"
             else:
                 save = gif + last
 
@@ -70,7 +72,7 @@ class Imgur:
         count = 0
         for i in images:
             download = i[u'links'][u'original']
-            self.directlyDownload(download, sub, album = ending, count = count)
+            self.directlyDownload(download, sub, album=ending, count=count)
             count = count + 1
         return count
 
