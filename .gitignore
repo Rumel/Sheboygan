@@ -1,3 +1,4 @@
 downloads/
 *.pyc
 .idea/
+settings.txt
