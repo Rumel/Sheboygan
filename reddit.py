@@ -44,8 +44,10 @@ class Reddit:
     SUB = ""
     IMGS = 0
     ALBUMS = 0
+    SETTINGS = ""
 
-    def __init__(self, sub, pages=1):
+    def __init__(self, sub, stngs, pages=1):
+        self.SETTINGS = stngs
         self.SUB = sub
         self.URL = buildUrl(self.BASE, self.SUB)
         self.getLinks(pages)
@@ -106,16 +108,18 @@ class Reddit:
     def downloadImages(self):
         makeDir(self.SUB)
         for i in self.LINKS:
-            self.downloadImage(i.URL)
+            if self.SETTINGS.VerifySettings(i):
+                self.downloadImage(i.URL)
         return
 
     def downloadImagesAsync(self):
         makeDir(self.SUB)
         threads = []
         for i in self.LINKS:
-            thread = threading.Thread(target=self.downloadImageAsync,
-                                      args=([i.URL]))
-            threads.append(thread)
+            if self.SETTINGS.VerifySettings(i):
+                thread = threading.Thread(target=self.downloadImageAsync,
+                                          args=([i.URL]))
+                threads.append(thread)
         for t in threads:
             t.start()
         for t in threads:
