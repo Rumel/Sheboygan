@@ -2,29 +2,33 @@ from reddit import Link
 
 settingsFile = '''# Lines that begin with # are ignored
 nsfw = False
-upvotes = -1
-comments = -1
-downvotes = -1
-score = -1
-author = 
+upvotes =
+comments =
+downvotes =
+score =
+author =
 '''
 
 
-def convertSetting(s):
-    try:
+def convertSetting(s, t):
+    s = str(s).lstrip().rstrip()
+    if(t == "bool"):
         if(str.lower(s) == "true"):
             return True
         elif(str.lower(s) == "false"):
             return False
-        else:
-            try:
-                i = int(s)
-                return i
-            except ValueError:
-                return s
-    except IndexError:
+    elif(t == "string"):
+        if s == "":
+            return None
+        return s
+    elif(t == "int"):
+        try:
+            i = int(s)
+            return i
+        except ValueError:
+            return None
+    else:
         return None
-    return
 
 
 def treatString(s):
@@ -33,43 +37,42 @@ def treatString(s):
 
 class Settings:
     nsfw = False
-    upvotes = -1
-    comments = -1
-    downvotes = -1
-    score = 0
-    author = ""
+    upvotes = None
+    comments = None
+    downvotes = None
+    score = None
+    author = None
 
     def __init__(self):
         try:
             f = open('settings.txt', 'r')
-            print "Opened"
             lines = f.readlines()
             for li in lines:
-                print li
-                l = li.split('=')
+                l = li.lstrip().rstrip().split('=')
+
                 if l[0][0] is not "#":
                     if treatString(l[0]) == "nsfw":
-                        s = convertSetting(l[1])
+                        s = convertSetting(l[1], "bool")
                         if s is not None:
                             self.nsfw = s
                     elif treatString(l[0]) == "upvotes":
-                        s = convertSetting(l[1])
+                        s = convertSetting(l[1], "int")
                         if s is not None:
                             self.upvotes = s
                     elif treatString(l[0]) == "comments":
-                        s = convertSetting(l[1])
+                        s = convertSetting(l[1], "int")
                         if s is not None:
                             self.comments = s
                     elif treatString(l[0]) == "downvotes":
-                        s = convertSetting(l[1])
+                        s = convertSetting(l[1], "int")
                         if s is not None:
                             self.downvotes = s
                     elif treatString(l[0]) == "score":
-                        s = convertSetting(l[1])
+                        s = convertSetting(l[1], "int")
                         if s is not None:
                             self.score = s
                     elif treatString(l[0]) == "author":
-                        s = convertSetting(l[1])
+                        s = convertSetting(l[1], "string")
                         if s is not None:
                             self.author = s
         except IOError:
@@ -83,10 +86,40 @@ class Settings:
         return
 
     def VerifySettings(self, link):
+        reject = False
         if(self.nsfw is False and link.NSFW is True):
             print "Rejected NFSW"
+            reject = True
+
+        if(self.upvotes is not None):
+            if link.Ups >= self.upvotes:
+                print "Rejected not enough upvotes"
+                reject = True
+
+        if(self.comments is not None):
+            if link.Num_Comments >= self.comments:
+                print "Rejected not enough comments"
+                reject = True
+
+        if(self.downvotes is not None):
+            if link.Downs <= self.downvotes:
+                print "Rejected too many downvotes"
+                reject = True
+
+        if(self.score is not None):
+            if link.Score >= self.score:
+                print "Rejected score too low"
+                reject = True
+
+        if(self.author is not None):
+            if link.Author != self.author:
+                print "Rejected incorrect author"
+                reject = True
+
+        if reject is True:
             return False
-        return True
+        else:
+            return True
 
     def CreateSettingsFile(self):
         global settingsFile
