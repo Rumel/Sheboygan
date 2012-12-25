@@ -6,6 +6,10 @@ import time
 import threading
 import sys
 
+def isWindows():
+    if "win" in sys.platform:
+        return True
+    return False
 
 def getOpener():
     opener = urllib2.build_opener()
@@ -25,9 +29,13 @@ def createIfNotExists(dir):
 
 
 def makeDir(dir):
-    dls = ".\\downloads\\"
-    img = "\\img"
-    gif = "\\gif"
+    dls = "./downloads/"
+    img = "/img"
+    gif = "/gif"
+    if isWindows():
+        dls = dls.replace("/", "\\")
+        img = img.replace("/", "\\")
+        gif = gif.replace("/", "\\")
     dlDir = dls + dir
     dlDirImg = dlDir + img
     dlDirGif = dlDir + gif

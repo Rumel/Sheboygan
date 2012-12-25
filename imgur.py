@@ -5,6 +5,12 @@ import sys
 import threading
 
 
+def isWindows():
+    if "win" in sys.platform:
+        return True
+    return False
+
+
 def formatNumber(num):
     if(num < 10):
         return "00" + str(num)
@@ -33,13 +39,17 @@ class Imgur:
         last = split[len(split) - 1]
         ext = last.split(".")[1]
         if(ext != "gif"):
-            img = ".\\downloads\\" + sub + "\\img\\"
+            img = "./downloads/" + sub + "/img/"
+            if isWindows():
+                img = img.replace("/", "\\")
             if(album != ""):
                 save = img + album + " - " + formatNumber(count) + "." + ext
             else:
                 save = img + last
         else:
-            gif = ".\\downloads\\" + sub + "\\gif\\"
+            gif = "./downloads/" + sub + "/gif/"
+            if isWindows():
+                gif = gif.replace("/", "\\")
             if(album != ""):
                 save = gif + album + " - " + formatNumber(count) + ".gif"
             else:
