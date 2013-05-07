@@ -1,6 +1,7 @@
 from reddit import Link
 
 settingsFile = '''# Lines that begin with # are ignored
+async = False
 nsfw = False
 upvotes =
 comments =
@@ -36,6 +37,7 @@ def treatString(s):
 
 
 class Settings:
+    async = False
     nsfw = False
     upvotes = None
     comments = None
@@ -75,6 +77,10 @@ class Settings:
                         s = convertSetting(l[1], "string")
                         if s is not None:
                             self.author = s
+                    elif treatString(l[0]) == "async":
+                        s = convertSetting(l[1], "bool")
+                        if s is not None:
+                            self.async = s
         except IOError:
             print "Settings file doesn't exist"
             print "Would you like one created? y or n"

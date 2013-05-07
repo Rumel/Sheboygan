@@ -12,7 +12,10 @@ try:
         split = l.split(' ')
         print "Downloading", split[0]
         sub = reddit.Reddit(split[0], stngs, split[1])
-        sub.downloadImagesAsync()
+        if(stngs.async):
+            sub.downloadImagesAsync()
+        else:
+            sub.downloadImages()
 except IndexError:
     sub = raw_input("What subreddit would you like?\n")
     pages = raw_input("How many pages?\n")
